@@ -8,6 +8,10 @@ DB_CONFIG = {
     'port': int(os.getenv('DB_PORT', 3306))
 }
 
+if 'aivencloud' in DB_CONFIG['host']:
+    DB_CONFIG['ssl_disabled'] = False
+    DB_CONFIG['ssl_verify_identity'] = False
+
 UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'static', 'img')
 ALLOWED_EXTENSIONS = {'png','jpg','jpeg','gif'}
 SECRET_KEY = os.getenv('SECRET_KEY', 'cambia_esto_por_una_clave_segura')
