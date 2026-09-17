@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Panel Admin{% endblock %}
+{% block content %}
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="brand">
+      <h3>Tienda Admin</h3>
+    </div>
+    <nav>
+      <a href="{{ url_for('admin_products') }}" class="nav-link">Productos</a>
+      <a href="{{ url_for('new_product') }}" class="nav-link">Agregar Producto</a>
+      <a href="{{ url_for('tienda') }}" class="nav-link">Ver Tienda</a>
+    </nav>
+  </aside>
+
+  <section class="admin-main">
+    <header class="admin-header">
+      <div>
+        <h2>{% block admin_title %}Panel de Administración{% endblock %}</h2>
+      </div>
+      <div class="admin-header-actions">
+        <span class="user-badge"> {{ session.username }} </span>
+        <a class="btn" href="{{ url_for('logout') }}">Salir</a>
+      </div>
+    </header>
+
+    <div class="admin-content">
+      {% block admin_content %}{% endblock %}
+    </div>
+  </section>
+</div>
+
+<style>
+.admin-layout{ display:flex; gap:20px; padding:20px; }
+.admin-sidebar{ width:220px; background:#fff; border:1px solid #e6e6e6; border-radius:8px; padding:16px; height:fit-content; }
+.admin-sidebar .brand h3{ margin:0 0 12px 0; font-size:1.05rem; }
+.admin-sidebar nav{ display:flex; flex-direction:column; gap:8px; }
+.admin-sidebar .nav-link{ padding:8px 10px; border-radius:6px; text-decoration:none; color:#1a202c; background:transparent; }
+.admin-sidebar .nav-link:hover{ background:#f1f5f9; }
+.admin-main{ flex:1; }
+.admin-header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+.admin-header-actions{ display:flex; gap:8px; align-items:center; }
+.user-badge{ background:#edf2f7; padding:6px 10px; border-radius:20px; font-size:0.9rem; }
+.admin-content{ background:#fff; padding:16px; border-radius:8px; border:1px solid #e6e6e6; }
+@media (max-width:800px){
+  .admin-layout{ flex-direction:column; }
+  .admin-sidebar{ width:100%; display:flex; flex-direction:row; justify-content:space-between; align-items:center; }
+  .admin-sidebar nav{ flex-direction:row; gap:6px; }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,24 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pyenvirtual/
+ENV/
+env.bak/
+venv.bak/
+
+# Environment variables
+.env
+
+# VS Code
+.vscode/
+
+# SQLite databases (si se usa alguno)
+*.sqlite3
+
+# Uploads or dynamic media
+static/uploads/

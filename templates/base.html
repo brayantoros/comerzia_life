@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{% block title %}Tienda-comerzia{% endblock %}</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  
+</head>
+<script src="{{ url_for('static', filename='js/validation.js') }}"></script>
+
+<body>
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm" style="padding: 12px 20px;">
+      <div class="container-fluid">
+        <!-- Opción Inicio siempre visible y destacada -->
+        <a class="navbar-brand text-primary fw-bold" href="{{ url_for('landing') }}">Inicio</a>
+        
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#opcionesMenu" aria-controls="opcionesMenu" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="opcionesMenu">
+          <ul class="navbar-nav ms-auto align-items-center">
+            
+            {% if session.get('username') %}
+              <!-- Menú de usuario logueado -->
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle fw-semibold text-primary" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Hola, {{ session.username }}
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="userDropdown">
+                  <li><a class="dropdown-item" href="{{ url_for('tienda') }}">Tienda</a></li>
+                  <li>
+                    <a class="dropdown-item d-flex justify-content-between align-items-center" href="{{ url_for('cart') }}">
+                      Carrito
+                      {% if cart_count and cart_count > 0 %}
+                        <span class="badge bg-danger rounded-pill">{{ cart_count }}</span>
+                      {% endif %}
+                    </a>
+                  </li>
+                  {% if session.rol == 'admin' %}
+                    <li><a class="dropdown-item" href="{{ url_for('admin_products') }}">Panel Admin</a></li>
+                  {% endif %}
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item text-danger" href="{{ url_for('logout') }}">Salir</a></li>
+                </ul>
+              </li>
+            {% else %}
+              <!-- Menú para visitantes -->
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle fw-semibold text-primary" href="#" id="guestDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Opciones
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="guestDropdown">
+                  <li><a class="dropdown-item" href="{{ url_for('tienda') }}">Tienda</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="{{ url_for('login') }}">Entrar</a></li>
+                  <li><a class="dropdown-item" href="{{ url_for('register') }}">Registro</a></li>
+                </ul>
+              </li>
+            {% endif %}
+            
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+  <main>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flashes">
+          {% for cat, msg in messages %}
+            <li class="{{ cat }}">{{ msg }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+  <script src="{{ url_for('static', filename='js/validation.js') }}"></script>
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

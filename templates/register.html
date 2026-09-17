@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% block title %}Registro - Tienda{% endblock %}
+{% block content %}
+<section class="auth-container">
+  <h2>Registro</h2>
+  <form id="registerForm" method="post" action="{{ url_for('register') }}" novalidate>
+    <div class="form-group">
+      <label for="nombre"><strong>Nombre</strong></label>
+      <input type="text" id="nombre" name="nombre" required maxlength="50">
+    </div>
+    <div class="form-group">
+      <label for="apellido"><strong>Apellido</strong></label>
+      <input type="text" id="apellido" name="apellido" required maxlength="50">
+    </div>
+    <div class="form-group">
+      <label for="correo"><strong>Correo Electrónico</strong></label>
+      <input type="email" id="correo" name="correo" required maxlength="100">
+    </div>
+
+    <div class="form-group">
+      <label for="username"><strong>Usuario</strong></label>
+      <input type="text" id="username" name="username" required maxlength="50" autocomplete="username">
+    </div>
+    <div class="form-group">
+      <label for="password"><strong>Contraseña</strong></label>
+      <input type="password" id="password" name="password" required autocomplete="new-password" minlength="6">
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn primary">Crear cuenta</button>
+      <a class="btn link" href="{{ url_for('login') }}">Ya tengo cuenta</a>
+    </div>
+  </form>
+</section>
+
+<script>
+document.getElementById('registerForm').addEventListener('submit', function(e){
+  const nombre = document.getElementById('nombre').value.trim();
+  const apellido = document.getElementById('apellido').value.trim();
+  const correo = document.getElementById('correo').value.trim();
+  const user = document.getElementById('username').value.trim();
+  const pass = document.getElementById('password').value;
+  if(!nombre || !apellido || !correo || !user || !pass){
+    e.preventDefault();
+    alert('Completa todos los campos.');
+    return;
+  }
+  if(pass.length < 6){
+    e.preventDefault();
+    alert('La contraseña debe tener al menos 6 caracteres.');
+  }
+});
+</script>
+
+<style>
+  .auth-container {
+    max-width: 400px;
+    margin: 12vh auto; /* Centrado vertical con margen relativo a la ventana */
+    padding: 36px 32px;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    border: 1px solid #eaeaea;
+  }
+
+  .auth-container h2 {
+    text-align: center;
+    margin-bottom: 28px;
+    color: #1a202c;
+    font-weight: 700;
+    font-size: 1.8rem;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+    color: #4a5568;
+    font-weight: 600;
+  }
+
+  .form-group input, .form-group select {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #cbd5e0;
+    border-radius: 8px;
+    background-color: #f8fafc;
+    color: #1a202c;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+  }
+
+  .form-group input:focus, .form-group select:focus {
+    outline: none;
+    border-color: #3182ce;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.15);
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 14px;
+    flex-direction: column;
+    margin-top: 30px;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: 8px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1.05rem;
+    transition: all 0.3s ease;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  .btn.primary {
+    background: #1a202c;
+    color: #ffffff;
+  }
+
+  .btn.primary:hover {
+    background: #2d3748;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+  }
+
+  .btn.link {
+    background: #ffffff;
+    color: #4a5568;
+    border: 1px solid #cbd5e0;
+  }
+
+  .btn.link:hover {
+    background: #f7fafc;
+    color: #1a202c;
+    border-color: #a0aec0;
+  }
+</style>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Inicio - Comerzia Life{% endblock %}
+{% block content %}
+<section class="landing-hero">
+  <div class="hero-content">
+    <div class="hero-text-block">
+      <h1 class="landing-title">Bienvenido a <span class="highlight">Comerzia Life</span></h1>
+      <p class="landing-description">
+        Descubre un catálogo exclusivo con los mejores productos pensados para ti. 
+        Calidad, diseño y la mejor experiencia de compra en un solo lugar.
+      </p>
+      <div class="hero-actions">
+        <a href="{{ url_for('tienda') }}" class="btn-primary-glow">Explorar Catálogo</a>
+        <a href="{{ url_for('register') }}" class="btn-secondary-outline">Únete Ahora</a>
+      </div>
+    </div>
+    
+    <div class="hero-visual">
+      <img src="{{ url_for('static', filename='img/comerzia-logo.png') }}" alt="Comerzia" class="comerzia-logo">
+    </div>
+  </div>
+</section>
+{% endblock %}

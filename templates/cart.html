@@ -1,0 +1,337 @@
+{% extends "base.html" %}
+{% block title %}Mi Carrito - Comerzia{% endblock %}
+{% block content %}
+<section class="cart-container">
+  <div class="cart-header">
+    <h1>Tu Carrito de Compras</h1>
+    <p>Revisa tus artículos antes de proceder al pago</p>
+  </div>
+
+  {% if items %}
+  <div class="cart-content">
+    <div class="cart-items">
+      {% for item in items %}
+      <div class="cart-item">
+        <div class="item-img">
+          <img src="{{ url_for('uploaded_file', filename=item.imagen) if item.imagen else url_for('static', filename='img/placeholder.png') }}" alt="{{ item.nombre }}">
+        </div>
+        <div class="item-details">
+          <h3>{{ item.nombre }}</h3>
+          <p class="unit-price">Precio unitario: <strong>${{ '%.2f'|format(item.precio) }}</strong></p>
+          <small class="stock-info">Stock disponible: {{ item.stock }}</small>
+        </div>
+        <div class="item-qty">
+          <form action="{{ url_for('update_cart', prod_id=item.producto_id) }}" method="post" style="display:inline-flex; align-items:center; gap:8px;">
+            <label for="cantidad-{{ item.producto_id }}" style="font-size:0.9rem;">Cant:</label>
+            <input type="number" id="cantidad-{{ item.producto_id }}" name="cantidad" value="{{ item.cantidad }}" min="1" max="{{ item.stock }}" style="width:55px; padding:6px; border:1px solid #cbd5e0; border-radius:6px; text-align:center;">
+            <button type="submit" title="Actualizar cantidad" style="background:#edf2f7; border:none; padding:6px 10px; border-radius:6px; cursor:pointer; color:#4a5568; font-weight:600; font-size:0.85rem; transition:0.2s;">↻</button>
+          </form>
+        </div>
+        <div class="item-subtotal">
+          <p>Subtotal</p>
+          <strong>${{ '%.2f'|format(item.subtotal) }}</strong>
+        </div>
+        <div class="item-actions">
+          <form action="{{ url_for('remove_from_cart', prod_id=item.producto_id) }}" method="post">
+            <button type="submit" class="btn-remove" title="Eliminar del carrito">&times;</button>
+          </form>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="cart-summary">
+      <h3>Resumen del Pedido</h3>
+      <div class="summary-row">
+        <span>Subtotal</span>
+        <span>${{ '%.2f'|format(total) }}</span>
+      </div>
+      <div class="summary-row">
+        <span>Envío</span>
+        <span class="free-shipping">Gratis</span>
+      </div>
+      <hr>
+      <div class="summary-row total-row">
+        <span>Total</span>
+        <span>${{ '%.2f'|format(total) }}</span>
+      </div>
+
+      <form action="{{ url_for('checkout') }}" method="post" onsubmit="return confirmCheckout();" class="checkout-form">
+        <button type="submit" class="btn-checkout">Comprar Ahora</button>
+      </form>
+      
+      <a href="{{ url_for('tienda') }}" class="btn-continue">Continuar Comprando</a>
+    </div>
+  </div>
+  {% else %}
+  <div class="cart-empty">
+    <h2>Tu carrito está vacío</h2>
+    <p>Parece que aún no has agregado ningún producto a tu carrito de compras.</p>
+    <a href="{{ url_for('tienda') }}" class="btn-checkout" style="display: inline-block; width: auto; padding: 12px 30px; margin-top: 20px; text-decoration: none;">Ir a la Tienda</a>
+  </div>
+  {% endif %}
+</section>
+
+<script>
+function confirmCheckout() {
+  return confirm('¿Estás seguro de que deseas proceder con la compra?');
+}
+</script>
+
+<style>
+  .cart-container {
+    max-width: 1200px;
+    margin: 6vh auto;
+    padding: 24px;
+  }
+
+  .cart-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .cart-header h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #1a202c;
+    margin-bottom: 8px;
+  }
+
+  .cart-header p {
+    color: #718096;
+    font-size: 1.1rem;
+  }
+
+  .cart-content {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+  }
+
+  .cart-items {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .cart-item {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    gap: 20px;
+  }
+
+  .item-img img {
+    width: 90px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 12px;
+  }
+
+  .item-details {
+    flex: 2;
+  }
+
+  .item-details h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a202c;
+    margin-bottom: 6px;
+  }
+
+  .item-details .unit-price {
+    color: #4a5568;
+    font-size: 0.95rem;
+  }
+
+  .item-details .stock-info {
+    color: #a0aec0;
+    font-size: 0.85rem;
+    display: block;
+    margin-top: 4px;
+  }
+
+  .item-qty {
+    flex: 1;
+    text-align: center;
+    font-size: 1.05rem;
+    color: #2d3748;
+  }
+
+  .item-subtotal {
+    flex: 1;
+    text-align: right;
+  }
+
+  .item-subtotal p {
+    font-size: 0.85rem;
+    color: #718096;
+    margin-bottom: 2px;
+  }
+
+  .item-subtotal strong {
+    font-size: 1.25rem;
+    color: #1a202c;
+    font-weight: 700;
+  }
+
+  .item-actions {
+    margin-left: 10px;
+  }
+
+  .btn-remove {
+    background: #fed7d7;
+    color: #c53030;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+
+  .btn-remove:hover {
+    background: #c53030;
+    color: #ffffff;
+    transform: scale(1.1);
+  }
+
+  /* Resumen de Compra */
+  .cart-summary {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.96);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.06);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    position: sticky;
+    top: 20px;
+  }
+
+  .cart-summary h3 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #1a202c;
+    margin-bottom: 20px;
+  }
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 1.05rem;
+    color: #4a5568;
+  }
+
+  .free-shipping {
+    color: #38a169;
+    font-weight: 600;
+  }
+
+  .total-row {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #1a202c;
+    margin-top: 16px;
+    margin-bottom: 24px;
+  }
+
+  .btn-checkout {
+    display: block;
+    width: 100%;
+    background: #1a202c;
+    color: #ffffff;
+    text-align: center;
+    padding: 16px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .btn-checkout:hover {
+    background: #2d3748;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+  }
+
+  .btn-continue {
+    display: block;
+    text-align: center;
+    margin-top: 14px;
+    color: #4a5568;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: color 0.2s ease;
+  }
+
+  .btn-continue:hover {
+    color: #1a202c;
+    text-decoration: underline;
+  }
+
+  /* Carrito vacío */
+  .cart-empty {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 60px 40px;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    max-width: 600px;
+    margin: 40px auto;
+  }
+
+  .empty-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+  }
+
+  .cart-empty h2 {
+    font-size: 1.8rem;
+    color: #1a202c;
+    margin-bottom: 10px;
+  }
+
+  .cart-empty p {
+    color: #718096;
+    font-size: 1.05rem;
+  }
+
+  @media (max-width: 992px) {
+    .cart-content {
+      flex-direction: column;
+    }
+    .cart-summary {
+      width: 100%;
+      position: static;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .cart-item {
+      flex-direction: column;
+      text-align: center;
+    }
+    .item-subtotal {
+      text-align: center;
+    }
+  }
+</style>
+{% endblock %}

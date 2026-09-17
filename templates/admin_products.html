@@ -1,0 +1,77 @@
+{% extends "admin_layout.html" %}
+{% block title %}Panel Admin - Productos{% endblock %}
+{% block admin_content %}
+<h2>Panel de Productos</h2>
+
+<div class="admin-actions" style="margin-bottom:12px; display:flex; gap:10px;">
+  <a class="btn primary" href="{{ url_for('new_product') }}">Agregar Producto</a>
+  <a class="btn" style="background:#4a5568; color:white;" href="{{ url_for('admin_reporte_pdf') }}">Descargar Reporte (PDF)</a>
+</div>
+
+<table class="admin-table" style="width:100%; border-collapse:collapse;">
+  <thead>
+    <tr>
+      <th style="text-align:left; padding:8px;">#</th>
+      <th style="text-align:left; padding:8px;">Imagen</th>
+      <th style="text-align:left; padding:8px;">Nombre</th>
+      <th style="text-align:left; padding:8px;">Precio</th>
+      <th style="text-align:left; padding:8px;">Stock</th>
+      <th style="text-align:left; padding:8px;">Estado</th>
+      <th style="text-align:left; padding:8px;">Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for p in productos %}
+    <tr class="{% if p.activo == 0 %}inactive{% endif %}">
+      <td style="padding:8px;">{{ p.id }}</td>
+      <td style="padding:8px;">
+        <img src="{{ url_for('uploaded_file', filename=p.imagen) if p.imagen else url_for('static', filename='img/placeholder.png') }}"
+             alt="{{ p.nombre }}" style="width:64px; height:64px; object-fit:cover; border-radius:4px;">
+      </td>
+      <td style="padding:8px;">{{ p.nombre }}</td>
+      <td style="padding:8px;">${{ '%.2f'|format(p.precio) }}</td>
+      <td style="padding:8px;">
+        <form method="post" action="{{ url_for('update_stock', prod_id=p.id) }}" style="display:flex; gap:5px;">
+          <input type="number" name="stock" value="{{ p.stock }}" min="0" style="width:60px; padding:4px;">
+          <button type="submit" class="btn success" style="padding:4px 8px; font-size:12px;">Guardar</button>
+        </form>
+      </td>
+      <td style="padding:8px;">{% if p.activo == 1 %}Activo{% else %}Desactivado{% endif %}</td>
+      <td style="padding:8px;">
+        <a class="btn" href="{{ url_for('edit_product', prod_id=p.id) }}">Editar</a>
+
+        <form method="post" action="{{ url_for('delete_product', prod_id=p.id) }}" style="display:inline;" onsubmit="return confirmDelete();">
+          <button type="submit" class="btn danger">Eliminar</button>
+        </form>
+
+        <form method="post" action="{{ url_for('toggle_product', prod_id=p.id) }}" style="display:inline;">
+          {% if p.activo == 1 %}
+            <button type="submit" class="btn warn">Desactivar</button>
+          {% else %}
+            <button type="submit" class="btn success">Activar</button>
+          {% endif %}
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<script>
+function confirmDelete(){
+  return confirm('¿Eliminar este producto? Esta acción no se puede deshacer.');
+}
+</script>
+
+<style>
+.admin-table thead th{ background:#f7fafc; border-bottom:1px solid #e2e8f0; }
+.admin-table tbody tr{ border-bottom:1px solid #eee; }
+.admin-table tbody tr.inactive{ background:#f5f5f5; color:#888; }
+.btn{ padding:6px 10px; margin-right:6px; border-radius:4px; border:none; cursor:pointer; text-decoration:none; }
+.btn.primary{ background:#2b6cb0; color:#fff; }
+.btn.danger{ background:#e53e3e; color:#fff; }
+.btn.warn{ background:#dd6b20; color:#fff; }
+.btn.success{ background:#2f855a; color:#fff; }
+.btn:not(.primary):not(.danger):not(.warn):not(.success){ background:#edf2f7; color:#111; }
+</style>
+{% endblock %}
