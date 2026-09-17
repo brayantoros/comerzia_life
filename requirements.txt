@@ -1,6 +1,6 @@
-Flask==2.2.5
+Flask
 mysql-connector-python==8.1.0
-Werkzeug==2.2.3
+Werkzeug
 python-dotenv==1.0.0
 fpdf==1.7.2
 gunicorn==23.0.0
